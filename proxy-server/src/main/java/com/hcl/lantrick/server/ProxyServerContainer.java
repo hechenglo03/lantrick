@@ -31,7 +31,7 @@ public class ProxyServerContainer implements Container{
     public void start() {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(serverBossGroup,serverWokerGroup)
-                .channel(NioServerSocketChannel.class)
+                .channel(NioServerSocketChannel.class);
     }
 
 
