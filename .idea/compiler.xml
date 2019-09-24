@@ -6,10 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="proxyserver" />
-        <module name="proxycommon" />
-        <module name="proxyprotocol" />
         <module name="proxyclient" />
+        <module name="proxy-common" />
+        <module name="proxycommon" />
+        <module name="proxy-server" />
+        <module name="proxy-client" />
+        <module name="proxy-protocol" />
+        <module name="proxyserver" />
+        <module name="proxyprotocol" />
       </profile>
     </annotationProcessing>
   </component>
