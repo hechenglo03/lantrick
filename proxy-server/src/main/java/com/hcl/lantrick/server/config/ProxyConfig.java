@@ -15,12 +15,12 @@ public class ProxyConfig {
     //需要绑定ip地址
     private String serverIp;
 
-    private String serverPort;
+    private int serverPort;
 
     //http服务器上绑定ip
     private String httpServerIp;
 
-    private String httpServerPort;
+    private int httpServerPort;
 
     private List<Client> clients;
 
@@ -28,10 +28,56 @@ public class ProxyConfig {
 
     private ProxyConfig(){
         this.serverIp = Config.getInstance().getStringValueWithDefault("serverIp","0.0.0.0");
-        this.serverPort = Config.getInstance().getStringValueWithDefault("serverPort","9953");
+        this.serverPort = Config.getInstance().getIntWithDefault("serverPort",9953);
         this.httpServerIp = Config.getInstance().getStringValueWithDefault("httpServerIp","0.0.0.0");
-        this.httpServerPort = Config.getInstance().getStringValueWithDefault("httpServerIpPort","80");
+        this.httpServerPort = Config.getInstance().getIntWithDefault("httpServerIpPort",80);
         logger.info("serverIp:{},serverPort:{},httpServerIp:{},httpServerIpPort:{}",serverIp,serverPort,httpServerIp,httpServerPort);
+    }
+
+    public static ProxyConfig getInstance(){
+        return new ProxyConfig();
+    }
+
+    public String getServerIp() {
+        return serverIp;
+    }
+
+    public void setServerIp(String serverIp) {
+        this.serverIp = serverIp;
+    }
+
+
+    public String getHttpServerIp() {
+        return httpServerIp;
+    }
+
+    public void setHttpServerIp(String httpServerIp) {
+        this.httpServerIp = httpServerIp;
+    }
+
+
+    public List<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(List<Client> clients) {
+        this.clients = clients;
+    }
+
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    public int getHttpServerPort() {
+        return httpServerPort;
+    }
+
+    public void setHttpServerPort(int httpServerPort) {
+        this.httpServerPort = httpServerPort;
     }
 
     public static class Client{

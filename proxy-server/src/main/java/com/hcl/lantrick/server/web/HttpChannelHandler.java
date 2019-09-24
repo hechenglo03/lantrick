@@ -27,11 +27,13 @@ public class HttpChannelHandler extends SimpleChannelInboundHandler<FullHttpRequ
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
-        System.out.println("有请求进来了");
         if(msg.getMethod().equals(HttpMethod.GET)){
             outputPages(ctx, msg);
             return;
         }
+
+        ResponseInfo responseInfo = ApiRoute.run(msg);
+        outputContent(ctx,responseInfo.getCode()/100,msg,"","Application/json;charset=utf-8");
     }
 
     private void outputPages(ChannelHandlerContext ctx,FullHttpRequest request) throws Exception {
@@ -52,17 +54,22 @@ public class HttpChannelHandler extends SimpleChannelInboundHandler<FullHttpRequ
         RandomAccessFile raf = null;
         raf = new RandomAccessFile(file,"r");
 
-        FullHttpResponse response = new DefaultFullHttpResponse(request.getProtocolVersion(),HttpResponseStatus.OK);
-        response.headers().add(RtspHeaders.Names.CONTENT_TYPE,"Application/json;charset=utf-8");
-        //response.headers().add(HttpHeaders.Names.CONTENT_LENGTH,raf.length());
+        HttpResponse response = new DefaultHttpResponse(request.getProtocolVersion(),HttpResponseStatus.OK);
+        response.headers().add(HttpHeaders.Names.CONTENT_TYPE,"text/html");
+        response.headers().add(HttpHeaders.Names.CONTENT_LENGTH,raf.length());
+
+        //判断是否保持连接
+        if(HttpHeaders.isKeepAlive(request)){
+            response.headers().add(HttpHeaders.Names.CONNECTION,HttpHeaders.Values.KEEP_ALIVE);
+        }
 
         ctx.write(response);
-        //DefaultFileRegion defaultFileRegion = new DefaultFileRegion(raf.getChannel(),0,raf.length());
-        //ctx.write(defaultFileRegion);
-        String message = "{one:1}";
-        ctx.writeAndFlush(message.getBytes("utf-8"));
-        //ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
-        ctx.channel().close();
+        DefaultFileRegion defaultFileRegion = new DefaultFileRegion(raf.getChannel(),0,raf.length());
+        ctx.write(defaultFileRegion);
+        ChannelFuture channelFuture = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+        if(!HttpHeaders.isKeepAlive(request)){
+            channelFuture.addListener(ChannelFutureListener.CLOSE);
+        }
 
     }
 

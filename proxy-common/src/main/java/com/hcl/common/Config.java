@@ -71,5 +71,17 @@ public class Config {
         return value;
     }
 
+    public int getInt(String key){
+        return Integer.valueOf(this.configuration.getProperty(key));
+    }
+
+    public int getIntWithDefault(String key,int port){
+        String value = this.configuration.getProperty(key);
+        if(StringUtils.isEmpty(value)){
+            return port;
+        }
+        return port;
+    }
+
 
 }
